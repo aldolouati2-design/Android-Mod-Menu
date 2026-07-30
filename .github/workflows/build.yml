@@ -32,3 +32,4 @@ jobs:
 
       - name: Compila APK
         run: ./gradlew assembleDebug --no-daemon
+      
