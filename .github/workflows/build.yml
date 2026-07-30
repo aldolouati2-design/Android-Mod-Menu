@@ -19,11 +19,8 @@ jobs:
         with:
           gradle-version: 7.5
 
-      - name: Permessi Gradle
-        run: chmod +x gradlew
-
-      - name: Compila APK
-        run: ./gradlew assembleDebug --no-daemon
+      - name: Compila APK Diretto
+        run: gradle assembleDebug --no-daemon
 
       - name: Salva APK Pronto
         uses: actions/upload-artifact@v4
