@@ -1,0 +1,30 @@
+name: Build LGL Menu
+on: [push, workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout del codice
+        uses: actions/checkout@v4
+
+      - name: Configura Java 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Configura Android NDK
+        uses: android-actions/setup-android@v3
+
+      - name: Permessi Gradle
+        run: chmod +x gradlew
+
+      - name: Compila APK
+        run: ./gradlew assembleDebug
+
+      - name: Salva APK Pronto
+        uses: actions/upload-artifact@v4
+        with:
+          name: LGL-ModMenu-APK
+          path: app/build/outputs/apk/debug/*.apk
