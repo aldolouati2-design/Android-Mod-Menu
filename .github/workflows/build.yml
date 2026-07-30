@@ -8,10 +8,10 @@ jobs:
       - name: Checkout del codice
         uses: actions/checkout@v4
 
-      - name: Configura Java 17
+      - name: Configura Java 11
         uses: actions/setup-java@v4
         with:
-          java-version: '17'
+          java-version: '11'
           distribution: 'temurin'
 
       - name: Configura Android SDK e Accetta Licenze
@@ -22,8 +22,8 @@ jobs:
       - name: Accetta Licenze Manualmente
         run: yes | sdkmanager --licenses || true
 
-      - name: Rigenera Gradle Wrapper Mancante
-        run: gradle wrapper
+      - name: Forza Gradle Wrapper Versione Compatibile
+        run: gradle wrapper --gradle-version 7.5
 
       - name: Permessi Gradle
         run: chmod +x gradlew
