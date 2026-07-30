@@ -22,6 +22,9 @@ jobs:
       - name: Accetta Licenze Manualmente
         run: yes | sdkmanager --licenses || true
 
+      - name: Rigenera Gradle Wrapper Mancante
+        run: gradle wrapper
+
       - name: Permessi Gradle
         run: chmod +x gradlew
 
