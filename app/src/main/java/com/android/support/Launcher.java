@@ -1,6 +1,5 @@
 package com.android.support;
 
-import android.app.ActivityManager;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Handler;
@@ -11,7 +10,6 @@ public class Launcher extends Service {
 
     Menu menu;
 
-    //When this Class is called the code in this function will be executed
     @Override
     public void onCreate() {
         super.onCreate();
@@ -20,11 +18,12 @@ public class Launcher extends Service {
         menu.SetWindowManagerWindowService();
         menu.ShowMenu();
 
-        //Create a handler for this Class
+        // Create a handler for this Service
         final Handler handler = new Handler();
         handler.post(new Runnable() {
+            @Override
             public void run() {
-               Thread();
+                Thread();
                 handler.postDelayed(this, 1000);
             }
         });
@@ -35,28 +34,23 @@ public class Launcher extends Service {
         return null;
     }
 
-    //Check if we are still in the game. If now our menu and menu button will dissapear
-    private boolean isNotInGame() {
-        ActivityManager.RunningAppProcessInfo runningAppProcessInfo = new ActivityManager.RunningAppProcessInfo();
-        ActivityManager.getMyMemoryState(runningAppProcessInfo);
-        return runningAppProcessInfo.importance != 100;
-    }
-
     private void Thread() {
-        if (isNotInGame()) {
-            menu.setVisibility(View.INVISIBLE);
-        } else {
+        // Keep the menu visible when running
+        if (menu != null) {
             menu.setVisibility(View.VISIBLE);
         }
     }
 
-    //Destroy our View
+    // Destroy our View properly
+    @Override
     public void onDestroy() {
         super.onDestroy();
-        menu.onDestroy();
+        if (menu != null) {
+            menu.onDestroy();
+        }
     }
 
-    //Same as above so it wont crash in the background and therefore use alot of Battery life
+    @Override
     public void onTaskRemoved(Intent intent) {
         super.onTaskRemoved(intent);
         try {
@@ -67,8 +61,8 @@ public class Launcher extends Service {
         stopSelf();
     }
 
-    //Override our Start Command so the Service doesnt try to recreate itself when the App is closed
-    public int onStartCommand(Intent intent, int i, int i2) {
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
         return Service.START_NOT_STICKY;
     }
 }
