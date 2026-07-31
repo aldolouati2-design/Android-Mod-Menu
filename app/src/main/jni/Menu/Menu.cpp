@@ -3,21 +3,21 @@
 
 void Init(JNIEnv *env, jobject thiz, jobject ctx, jobject title, jobject subtitle) {
     //Set sub title
-    setText(env, title, OBFUSCATE("<b>Modded by (yourname)</b>"));
+    setText(env, title, OBFUSCATE("<b>Modded by yoshiswagg</b>"));
 
     //Set sub title
     setText(env, subtitle, OBFUSCATE("<b><marquee><p style=\"font-size:30\">"
-                                     "<p style=\"color:green;\">Modded by yoshiswagg</p> | "
+                                     "<p style=\"color:green;\">CHWALA POLSCE</p> | "
                                      "Modded by yoshiswagg | Special thanks to BruhceMain!</p>"
                                      "</marquee></b>"));
 
     //Dialog Example
     Dialog(env,
            ctx,
-           OBFUSCATE("Welcome to your mod menu"),
-           OBFUSCATE("Thanks for the installation and call to action"),
-           OBFUSCATE("Visit"), // set nullptr if btn-link is not needed
-           OBFUSCATE("Close"),
+           OBFUSCATE("Welcome to yoshis mod menu"),
+           OBFUSCATE("Thanks for installing from a proud italian/polish modder! Have Fun"),
+           OBFUSCATE("nothing"), // set nullptr if btn-link is not needed
+           OBFUSCATE("Menu"),
            3, // set 0 if auto-close is not needed
            OBFUSCATE("https://github.com/LGLTeam")); // set nullptr if btn-link is not needed
 
