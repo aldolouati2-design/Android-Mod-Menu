@@ -6,7 +6,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Handler;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 public class DialogHelper {
@@ -36,6 +38,15 @@ public class DialogHelper {
             public void onClick(DialogInterface dialog, int which) {
             }
         });
+
+        // FIX: Set Overlay Window Type on the Dialog before calling show()
+        if (dialog.getWindow() != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY);
+            } else {
+                dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+            }
+        }
 
         dialog.show();
 
