@@ -85,18 +85,6 @@ bool btnPressed = false;
 // Target main library name
 #define targetLibName OBFUSCATE("libil2cpp.so")
 
-bool ShowNames = false;
-
-// Show real names - hook get_VisualName to return NetworkPlayerName
-void (*old_get_VisualName)(void* instance);
-void* get_VisualName(void* instance) {
-    if (ShowNames) {
-        auto get_NetworkPlayerName = (void* (*)(void*))getAbsoluteAddress(targetLibName, OBFUSCATE("0x116B4C0"));
-        return get_NetworkPlayerName(instance);
-    }
-    return old_get_VisualName(instance);
-}
-HOOK("libil2cpp.so", OBFUSCATE("0x1164F4C"), get_VisualName, old_get_VisualName);
 
     switch (featNum) {
         case 1:
