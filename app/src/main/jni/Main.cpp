@@ -18,13 +18,14 @@
 #include "dobby.h"
 
 int scoreMul = 1, coinsMul = 1;
+bool showRealNamesToggle = false;
 
 // Feature list definition for Java UI
 jobjectArray GetFeatureList(JNIEnv *env, jobject context) {
     jobjectArray ret;
 
     const char *features[] = {
-            OBFUSCATE("Toggle_No death"),
+            OBFUSCATE("Toggle_Show Real Names"),
             OBFUSCATE("Button_Start Invcibility (30 sec duration)"),
             OBFUSCATE("SeekBar_Score multiplier_1_100"),
             OBFUSCATE("SeekBar_Coins multiplier_1_1000"),
@@ -119,6 +120,9 @@ void Changes(JNIEnv *env, jclass clazz, jobject obj, jint featNum, jstring featN
             break;
         default:
             break;
+        case 10:
+            showRealNamesToggle = boolean;
+            break;
     }
 }
 
@@ -160,6 +164,17 @@ void hack_thread() {
     install_hook_AddScore(getAbsoluteAddress(targetLibName, OBFUSCATE("0x107A2E0")));
 
     HOOK(targetLibName, "0x1078C44", Update, old_Update);
+
+    // Show real names - hook get_VisualName to return NetworkPlayerName
+void (*old_get_VisualName)(void* instance);
+void* get_VisualName(void* instance) {
+    if (showRealNamesToggle) {
+        auto get_NetworkPlayerName = (void* (*)(void*))getAbsoluteAddress(targetLibName, OBFUSCATE("0x116B4C0"));
+        return get_NetworkPlayerName(instance);
+    }
+    return old_get_VisualName(instance);
+}
+HOOK(targetLibName, OBFUSCATE("0x1164F4C"), get_VisualName, old_get_VisualName);
 
     INST(targetLibName, "0x23558C", "AnyNameForDetect", true);
 #elif defined(__arm__)
