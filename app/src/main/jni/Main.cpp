@@ -119,9 +119,6 @@ void Changes(JNIEnv *env, jclass clazz, jobject obj, jint featNum, jstring featN
             break;
         default:
             break;
-        case 10:
-            showRealNamesToggle = boolean;
-            break;
     }
 }
 
