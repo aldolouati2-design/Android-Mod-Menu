@@ -24,7 +24,7 @@ jobjectArray GetFeatureList(JNIEnv *env, jobject context) {
     jobjectArray ret;
 
     const char *features[] = {
-            OBFUSCATE("Toggle_Show Real Names"),
+            OBFUSCATE("1_Toggle_Show Real Names"),
             OBFUSCATE("Button_Start Invcibility (30 sec duration)"),
             OBFUSCATE("SeekBar_Score multiplier_1_100"),
             OBFUSCATE("SeekBar_Coins multiplier_1_1000"),
@@ -85,39 +85,22 @@ bool btnPressed = false;
 // Target main library name
 #define targetLibName OBFUSCATE("libil2cpp.so")
 
-void Changes(JNIEnv *env, jclass clazz, jobject obj, jint featNum, jstring featName, jint value, jlong Lvalue, jboolean boolean, jstring text) {
+bool ShowNames = false;
 
-    // Prevent patching if target library isn't loaded in memory yet
-    if (!isLibraryLoaded(targetLibName)) {
-        LOGI("Target library not loaded yet, skipping switch handler.");
-        return;
+// Show real names - hook get_VisualName to return NetworkPlayerName
+void (*old_get_VisualName)(void* instance);
+void* get_VisualName(void* instance) {
+    if (ShowNames) {
+        auto get_NetworkPlayerName = (void* (*)(void*))getAbsoluteAddress(targetLibName, OBFUSCATE("0x116B4C0"));
+        return get_NetworkPlayerName(instance);
     }
+    return old_get_VisualName(instance);
+}
+HOOK("libil2cpp.so", OBFUSCATE("0x1164F4C"), get_VisualName, old_get_VisualName);
 
     switch (featNum) {
-        case 0:
-            // "No death" patch
-            PATCH_SWITCH(targetLibName, "0x1079728", "C0 03 5F D6", boolean);
-            break;
         case 1:
-            btnPressed = true;
-            break;
-        case 2:
-            scoreMul = value;
-            break;
-        case 3:
-            coinsMul = value;
-            break;
-        case 4:
-            if (boolean) {
-                PATCH(targetLibName, "0x10709AC", "E0 5F 40 B2 C0 03 5F D6");
-            } else {
-                RESTORE(targetLibName, "0x10709AC");
-            }
-            break;
-        case 5:
-            INST(targetLibName, "0x235630", "AnyNameForDetect2", boolean);
-            break;
-        default:
+            ShowNames = boolean;
             break;
     }
 }
